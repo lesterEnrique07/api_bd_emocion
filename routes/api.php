@@ -21,12 +21,12 @@ use Illuminate\Support\Facades\Route;
 
 //Registrar usuario
 Route::post('auth/register', [AuthController::class, 'create']);
+Route::apiResource('/paciente', PacienteController::class);
 // Rutas de autenticación
 Route::post('auth/login', [AuthController::class, 'login']);
 
 //Mediador para proteger las rutas
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::apiResource('/paciente', PacienteController::class);
     Route::apiResource('/clasificacion', ClasificacionController::class);
     Route::apiResource('/sesion', SesionController::class);
     Route::apiResource('/multimedia', MultimediaController::class);
