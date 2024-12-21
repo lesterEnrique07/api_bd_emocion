@@ -35,7 +35,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/paciente/{id}/emocion-mas-repetida', [PacienteController::class, 'emocionesMasRepetidas']);
     Route::get('/paciente/{id}/distribucion-de-emociones', [PacienteController::class, 'distribucionEmociones']);
     Route::get('/paciente/{id}/diversidad-de-emociones', [PacienteController::class, 'diversidadEmociones']);
-    Route::get('/paciente/{id}/tendencia-de-emociones', [PacienteController::class, 'distribucionEmocionesPorDia']);
     Route::get('/paciente/{id}/lista-de-audios', [PacienteController::class, 'getAudiosByPatient']);
     Route::get('/paciente/{id}/lista-de-fotos', [PacienteController::class, 'getFotosByPatient']);
     Route::get('/paciente/{id}/lista-de-multimedias', [PacienteController::class, 'getMultimediasByPatient']);

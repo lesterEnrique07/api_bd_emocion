@@ -230,59 +230,6 @@ class PacienteController extends Controller
     }
 
     /**
-     * Método que permite obtener la tendencia de emociones a lolargo del tiempo en la clasificación del audio, las fotos y audio y fotos juntos
-     * asociadas a un paciente específico.
-     */
-    public function distribucionEmocionesPorDia($paciente_id)
-    {
-        $emociones = ['Asco', 'Felicidad', 'Ira', 'Miedo', 'Neutralidad', 'Tristeza'];
-        $emocionAudio = DB::table('sesions')
-            ->join('clasificacions', 'sesions.clasificacion_id', '=', 'clasificacions.id')
-            ->where('sesions.paciente_id', $paciente_id)
-            ->select(DB::raw('DATE(sesions.fecha) as fecha'), 'clasificacions.emocion_audio', DB::raw('count(clasificacions.emocion_audio) as count'))
-            ->groupBy('fecha', 'clasificacions.emocion_audio')
-            ->get()
-            ->groupBy('fecha')
-            ->map(function ($day) {
-                return $day->pluck('count', 'emocion_audio')->toArray();
-            });
-        $emocionFoto = DB::table('sesions')
-            ->join('clasificacions', 'sesions.clasificacion_id', '=', 'clasificacions.id')
-            ->where('sesions.paciente_id', $paciente_id)
-            ->select(DB::raw('DATE(sesions.fecha) as fecha'), 'clasificacions.emocion_foto', DB::raw('count(clasificacions.emocion_foto) as count'))
-            ->groupBy('fecha', 'clasificacions.emocion_foto')
-            ->get()
-            ->groupBy('fecha')
-            ->map(function ($day) {
-                return $day->pluck('count', 'emocion_foto')->toArray();
-            });
-        $emocionAudioFoto = DB::table('sesions')
-            ->join('clasificacions', 'sesions.clasificacion_id', '=', 'clasificacions.id')
-            ->where('sesions.paciente_id', $paciente_id)
-            ->select(DB::raw('DATE(sesions.fecha) as fecha'), 'clasificacions.emocion_audio_foto', DB::raw('count(clasificacions.emocion_audio_foto) as count'))
-            ->groupBy('fecha', 'clasificacions.emocion_audio_foto')
-            ->get()
-            ->groupBy('fecha')
-            ->map(function ($day) {
-                return $day->pluck('count', 'emocion_audio_foto')->toArray();
-            });
-        $distribucion = [];
-        foreach ($emocionAudio as $fecha => $emocionesDia) {
-            $distribucion[$fecha] = [
-                'emocion_audio' => [],
-                'emocion_foto' => [],
-                'emocion_audio_foto' => []
-            ];
-            foreach ($emociones as $emocion) {
-                $distribucion[$fecha]['emocion_audio'][$emocion] = $emocionesDia[$emocion] ?? 0;
-                $distribucion[$fecha]['emocion_foto'][$emocion] = $emocionFoto[$fecha][$emocion] ?? 0;
-                $distribucion[$fecha]['emocion_audio_foto'][$emocion] = $emocionAudioFoto[$fecha][$emocion] ?? 0;
-            }
-        }
-        return response()->json($distribucion);
-    }
-
-    /**
      * Método que permite obtener todos los audios asociados a un paciente especifico divididos por emociones
      */
     public function getAudiosByPatient($pacienteId)
